@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom"
 
 function Dashboard() {
 
+  const setCanAccess = useUserStore(state => state.SetCanAccess);
   const canAccess = useUserStore(state => state.canAccess)
 
   const navigate = useNavigate();
@@ -42,7 +43,17 @@ function Dashboard() {
   
   return (
     <div className="bg-primary min-h-screen flex flex-col gap-y-2 px-20 py-10">
-      <h1 className="text-3xl font-medium text-white pb-4">Productos</h1>
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-medium text-white pb-4">{actualView === 'categories' ? 'Vista sumarizada' : 'Productos'}</h1>
+        <button
+          onClick={() => {
+            setCanAccess(false)
+            navigate('/login')
+          }}
+          className="bg-white rounded-lg h-10 px-6 text-primary">
+            Salir
+          </button>
+      </div>
       <Filters
       actualView={actualView}
       setActualView={setActualView}

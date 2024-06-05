@@ -1,9 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { useUserStore } from "../stores/user-store";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
 
 function Login(){
 
+    const canAccess = useUserStore(state => state.canAccess)
     const setCanAccess = useUserStore(state => state.SetCanAccess);
     
     const [password, setPassword] = useState<string>('')
@@ -11,7 +13,7 @@ function Login(){
     const navigate = useNavigate();
 
     const checkPassword = () => {
-        if(!password) return alert('Ingrese una contraseña')
+        if(!password) return toast.error('Ingrese una contraseña')
         let isPalindrome = false
         const cleanPassword = password.replace(/[^a-zA-Z0-9]/g, '').toLowerCase()        
         for(let i = 0; i < cleanPassword.length; i++){
@@ -22,18 +24,27 @@ function Login(){
             isPalindrome = true
         }
         if(isPalindrome){
-            return alert('Contraseña incorrecta, no puede ser un palíndromo')
+            return toast.error('Contraseña incorrecta, no puede ser un palíndromo')
         }
+        toast.success('Bienvenido :)')
         setCanAccess(true)
         navigate('/')
     }
+
+    useEffect(() => {
+        if(canAccess){
+          navigate('/dashboard')
+        }
+      },[canAccess])  
     
     return (
         <div className="bg-primary min-h-screen flex flex-col items-center justify-center">
-            <div className="flex flex-col bg-white px-10 py-4 rounded-lg shadow-2xl">
-                <h1>Login</h1>
+            <div className="flex flex-col bg-white px-20 py-14 rounded-lg shadow-2xl">
+                <h1 className="text-3xl font-medium text-primary pb-4">Login</h1>
+                <label className="">Password</label>
                 <input 
-                className="border border-gray-300 p-2 rounded-md mt-4"
+                name="password"
+                className="border border-gray-300 p-2 rounded-md mt-1"
                 type="text" 
                 value={password} 
                 onChange={(e) => {
